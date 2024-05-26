@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Client</title>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Socket.IO Client</h1>
+  <div>
+    <input type="text" id="messageInput" placeholder="Enter your message">
+    <button id="sendButton">Send</button>
+  </div>
+  <div id="messages"></div>
+
+  <script>
+    // Connect to the Socket.IO server
+    const socket = io('http://192.46.230.32:3000');
+
+    // On connection
+    socket.on('connect', () => {
+      console.log('Connected to the server');
+    });
+
+    // On receiving a message
+    socket.on('message', (data) => {
+      console.log('Message from server:', data);
+      const messagesDiv = document.getElementById('messages');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = data;
+      messagesDiv.appendChild(messageElement);
+    });
+
+    // On disconnection
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+    });
+
+    // Send a message to the server
+    document.getElementById('sendButton').addEventListener('click', () => {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+      socket.emit('message', message);
+      messageInput.value = '';
+    });
+  </script>
+</body>
+</html>
